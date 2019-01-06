@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CallPhone4</string>
+    <string name="btnDailText">拨打电话</string>
+</resources>
