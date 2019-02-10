@@ -1,0 +1,758 @@
+﻿学习笔记
+
+006 sdk下载和简介
+SDK：standard develop kits 标准开发工具集
+ADT：android develop tools（eclipse的插件）安卓开发工具包
+Tools：SDK所需用到的工具类，开发工具
+Extras：扩展工具
+	Android Support Library：高版本api的向下兼容
+	Google AdMob Ads SDK：谷歌提供的广告SDK
+	Google Analytics App Tracking SDK：应用程序分析的（多少用户，用户的行为等）
+	Google Cloud Message for Android Library：谷歌提供的云推送
+	Google USB Driver：真实手机连接的驱动
+	Intel x86 Emulator Accelerator(HAEM)：Intel x86模拟器加速器
+SDK Platform：开发程序用到的架包
+Samples for SDK：SDK里的api示例代码
+创建模拟器需要有镜像（System Image）
+Google APIs：使用谷歌应用比如地图时要下载
+Source for Android SDK：SDK的源代码
+
+
+007 创建模拟器
+AVD android virtual devices
+
+VGA	480*640
+QVGA	240*320
+HVGA	320*480
+WVGA	480*800
+FWVGA	480*854
+
+问题
+No CPU/ABI system image available for this target
+方法1
+添加环境变量 ANDROID_SDK_HOME，值为sdk的地址
+方法2
+Android SDK Manager，代理mirrors.zzu.edu.cn，端口80，下载
+ARM EABI v7a System Image、
+Intel x86 Atom System Image、
+MIPS System Image
+
+
+008 ddms简介
+DDMS
+adb.exe：android debug bridge 安卓调试桥
+adb devices	列出所有的连接设备
+reset adb	重启adb调试桥
+
+
+009 platform-tools简介
+adb kill-server	杀死adb调试桥
+adb start-server	启动adb调试桥
+netstat -ano 查看电脑端口号占用
+pid 进程标示符，通过电脑任务管理器，选择列后可以查看
+电脑环境变量添加后，不需要输入完整地址了
+
+
+010 项目的目录结构
+Create activity 创建一个界面
+assets	资产目录，存放打包到apk里的文件
+bin	编译后的文件目录
+gen	自动生成的文件目录
+project.properties	代表编译的版本，对应 android.jar 的版本
+libs 支持的jar包，会被添加到 android depend 目录下
+res	资源目录
+drawable	存放应用程序图标，会自动生成一个 id 在 R 文件里
+h	high 高分辨率
+m	middle 中间分辨率
+l	low 低分辨率
+x	特大分辨率
+xx	超大分辨率
+wrap_content	包裹内容
+android:text="@string/hello_world"	@代表R文件，string代表内部类，hello_world代表字段
+androidManifest.xml 应用程序的清单文件，程序的配置信息，包括启动的图标、应用程序名称、包名、版本号
+activity	代表应用程序的页面
+intent-filter	应用程序的桌面快捷方式
+    action的值为MAIN，代表程序的入口 
+	category的值为LAUNCHER，代表启动
+Project->Clean 刷新工程
+Android Tools->Fix Project Properties 修复编译版本错误
+
+
+011 apk的安装过程
+cd /d E:\NewJoin\androidWorkspace\hellomi\bin
+adb install hellmi.apk
+工具 ant
+android 下软件安装过程
+1.拷贝 xxx.apk 到 /data/app/xxx-1.apk
+2.在 /data/data 目录下创建一个文件夹，文件夹名称为当前应用程序的包名。程序产生的数据、文件会在这里
+/data/system/packages.xml android系统的注册表
+/data/system/packages.list 数据的目录
+
+
+012 常见adb指令
+adb devices 列出所有的连接设备
+adb kill-server 杀死adb调试桥
+adb start-server 启动adb调试桥
+adb install xxx.apk 把应用程序安装到设备上
+adb uninstall 包名 卸载应用程序
+adb -s 设备名称 install xxx.apk 安装到指定设备上
+adb pull oldname.xx newname.xx 把文件从设备取出到当前目录
+adb push oldname.xx /sdcard/newname.xx 把文件从当前目录放入设备sdcard目录
+adb -v 查看adb版本
+adb shell 手机命令行终端，相当于电脑的cmd
+	ls 手机目录
+	ps 手机当前进程
+	ping 手机的网络连通
+	
+
+013 创建模拟器遇到的问题
+一.模拟器无法启动 invalid command-line parameter 1.中文目录 2.环境变量Android_SDK_HOME
+二.模拟器无法保存数据 正常情况下会在x:\documents and settings\administrator\.android\avd\xxx.avd目录下产生.lock文件夹，标记模拟器已开启，当模拟器关闭的时候会自动删除
+如果电脑意外重启或模拟器非法关闭，这些文件夹不会被删除，新开启模拟器就无法保存数据。解决方法是删除.lock文件夹
+三.模拟器无信号 解决方法 给电脑设置ip
+四.ctrl+F11 横竖屏的切换
+emulator -avd avdname 启动模拟器
+mkmdcard 20m d:/sdcard.img 创建sdcard
+android create avd -name android2.2 -target 8 创建模拟器
+
+
+014 电话拨号器
+warp_content 包裹内容
+fill_parent 填充父窗体，与 match_parent 一样，旧
+match_parent 与父窗体对齐，与 fill_parent 一样，新
+layout_alignParentLeft 与父窗体左边对齐
+requestFocus 会弹出软键盘
+代码出现黄色提醒，选中后按 Ctrl+1 选择 Extract String，抽取字符
+@+id/et_number @代表R文件，+代表在R文件里添加或创建
+layout_below 指定当前控件在哪个控件下方
+setContentView(R.layout.activity_main) 加载布局文件
+findViewById(R.id.bt_dail) 返回的是View类型
+Button 按住Ctril + 左键，打开它的源代码；Attach Source 关联源代码；查看源代码，Button是特殊的View对象
+setOnClickListener 注册一个点击事件
+private class MyClasss implements MyInterface 类实现接口
+EditText1.getText().toString() 获取 EditText1 的内容
+intent1.SetAction(Intent.ACTION_CALL) 指定动作-打电话
+intent1.SetData(Url.parse("tel:"+phoneNumber)) 指定数据 url统一资源定位符 uri统一资源标示符
+startActivity(intent1) 开启新的界面，把动作塞进来
+清单里，添加拨打电话的权限
+错误记录：
+Q：Exception raised during rendering: java.lang.System.arraycopy([CI[CII)V
+Exception details are logged in Window > Show View > Error Log
+A：降低安卓在Eclipse里的呈现版本
+Q：error opening trace file：No such file or directory (2)
+A：Api版本和模拟器版本不同导致
+Q：Emulator without host-side GPU emulation detected.
+A：编辑模拟器，勾选 Use Host GPU
+
+
+015 点击事件的4种写法
+TextUtils.isEmpty 判断字符串是否为空
+Toast.makeText(context,text,duration).show(); 创建并弹出提示
+选中代码后，右键 Refactor - Extract Method ，抽取代码
+v.getId() 获取视图控件的ID
+第一种实现方法：定义一个内部类来实现点击事件
+第二种实现方法：采用匿名内部类创建点击事件
+第三种实现方法：当前Activity实现 OnClickListener 接口（implements OnClickListener），并实现接口里的方法。最常见的写法
+第四种实现方法：配置按钮的onClick属性（android:onClick="mybtnClick"），类似asp.net form里的前台和后台代码。实现原理是反射
+
+
+016 短信发送器
+SmsManager sms=SmsManager.getDefault();
+sms.sendTextMessage('手机号',国内一般用不上，填null,'内容70个汉字，或160个英文字符',短信是否发送失败,送达报告);
+运行程序挂掉，可以看到要添加的权限
+sms.divideMessage 把短信拆成多个片段，返回的是数组
+for(String item:字符串数组) 循环的写法
+
+
+017 相对布局和单位简介
+layout_toLeftOf 在谁的左边
+layout_above 在谁的上方
+layout_alignLeft 与谁左边对齐
+layout_alignParentBottom 与父窗体底部对齐
+dp == dip 单位像素密度，随手机屏幕大小适应
+sp 用于文字大小
+
+
+018 线性布局和布局的组合
+线性布局里的控件就相当于烤串上的各种吃的。线性布局有水平方向和垂直方向
+orientation="vertical" 朝向
+
+
+019 表格布局和绝对布局
+TableLayout
+TableRow
+layout_gravity 设置水平对齐方式
+
+
+020 帧布局
+FrameLayout
+android:visibility="invisible"
+
+
+021 测试相关概念
+根据是否知道源代码
+黑盒：不知道源代码，只关心程序执行过程和结果
+白盒：根据源代码写测试方法、测试用例，编写代码
+
+根据粒度
+方法测试
+单元测试
+集成测试
+
+根据测试次数
+冒烟测试：反复不停用，点到冒烟为止(安卓 猴子)
+压力测试：100万人同时访问
+
+adb shell
+monkey
+
+
+022 android下junit测试框架配置
+Window - Show View - Outline
+junit 单元测试
+
+创建测试类，要继承 AndroidTestCase
+一定要把异常给抛出给框架
+public void testAdd throw Exception{
+  //调用业务类的方法，并保存执行结果
+  //断言代码 
+  assertEquals(预期值，实际结果值)
+}
+Run As - Android JUnit Test 时，实际打包到手机，然后给手机发指令
+看console里的报错
+android.test.InstrumentationTestRunner
+
+增加配置项
+在清单文件AndroidManifest.xml的manifest节点添加instrumentation节点
+定义 uses-library 使用的函数库 android.test.runner，放到 application 节点
+Ctrl+Shift+/ xml文件里添加注释
+Junit输出窗体打印绿条，代表方法测试通过
+
+如果不记得配置项，那么新建一个Android Test Project项目，打开清单文件，可以看到配置，拷贝过去
+
+
+023 logCat简介
+System.out.println(0) 打印到Console
+System.err.println("我打印到console，也会打印到logcat，不推荐，因为不便于查找")
+LogCat 取出手机日志缓冲区的日志
+adb logcat
+Log.Error(tag,msg) tag一般是当前的类名
+Verbose:提醒 黑
+Debug:  调试 蓝
+Info:   信息 绿
+Warn:   警告 橙
+Error:  错误 红
+
+
+024 保存文件到手机内存
+setContentView(R.layout.activity_main) 设置布局内容
+然后才能调用 this.findViewById(R.id.myid) 查找控件
+TextUtils.isEmpty
+"zhangsan".equals(username)
+/data/app/ 是当前应用程序文件，不允许在此创建文件
+新建一个功能包（类似于C#项目新建文件夹），然后在其中新建类
+/data/data/包名/info.txt
+FileOutputStream fos=new FileOutputStream(file) 写文件
+fos.write()
+fos.close()
+Exception e  --->  e.printStackTrace()
+context.getFilesDir() 返回/data/data/包名/files/ 目录
+context.getCacheDir() 可以通过设置里具体应用程序的清除缓存清除
+context.openFileInput 打开文件
+context.openFileOutPut 在data/data/包名/files/创建文件
+Map<String,String> map=new HashMap<String,String>()
+map.put(key,value)
+FileInputStream  读文件
+BufferedReader 的 readLine() 方法
+InputStreamReader
+
+
+025 android下的文件访问权限
+Context.MODE_PRIVATE 私有
+Context.MODE_WORLD_READABLE 可读
+Context.MODE_WORLD_WRITEABLE 可写
+Context.MODE_WORLD_READABLE+Context.MODE_WORLD_WRITEABLE 可读可写
+@SuppressLint("WorldReadableFiles") 压制警告，即不显示警告了
+
+文件浏览器 File Explorer 的列 Permissions(linux系统下的文件权限)
+位置0   - 代表文件
+        d 代表目录
+位置1-3 当前用户 r可读 w可写 x可执行
+位置4-6 当前用户所在的组 
+位置7-9 其他用户
+一般情况下，安卓下的每一个应用程序，都是一个独立的用户，对应一个独立的组
+
+adb shell
+cd /data/data/
+ls -l
+
+cd 包名
+cd files
+ls -l
+
+十进制表示权限
+- --- --- ---  0 000
+- rw- --- ---  0 600
+- rw- rw- rw-  0 666
+
+chmod 666 文件名  修改权限
+
+
+026 保存文件到SD卡
+/sdcard/
+android.permission.WRITE_EXTERNAL_STORAGE 写外部存储的权限
+4.0以前版本，读不需要权限，4.0以后开发者选项增加“对SD卡进行读写保护”
+android.permission.READ_EXTERNAL_STORAGE 读外部存储的权限
+Environment.getExternalStorageState() 获取sd状态
+Environment.MEDIA_MOUNTED 可用
+
+
+027 分析setting源代码，获取sd卡大小
+系统设置里，可以看到sd卡大小，而安卓系统是开源的，找到系统设置的源码
+导入源代码，有 .Setting 文件时
+Import - General - Existing Projects Into Workspace
+无 .Setting 文件时
+Import - Android - Existing Android Code Into Workspace
+搜应用界面上的内容 Ctrl+H，切换到File Search
+File path=Environment.getExternalStorageDirectory() 获取SD卡目录
+StatFs stat=new StatFs(path.getPath())
+long blockSize=stat.getBlockSize()
+long totalBlocks=stat.getBlockCount()
+long availableBlocks=stat.getAvailableBlocks()
+android.text.format.Formatter.formatFileSize(context,totalSize)
+Environment.getDataDirectory() 获取手机内存目录
+
+
+028 SharedPreference入门
+可以防止脚本注入
+context.getSharedPreferences()
+Editor editor=sharedPreference.edit(); //得到一个编辑器，像一个Map集合
+editor.pushString(key,value);
+edit.commit(); //Editor 类似事务提交
+sharedPreference.getString(key,defaultvalue)
+
+
+029 xml文件的序列化
+序列化，就是把信息从内存写到文件里
+<?xmls version="1.0" encoding="uft-8" ?>
+for(SmsInfo info : lstSmsInfo){ }
+android_permission_WRITE_EXTERNAL_STORAGE 写入外部存储的权限
+FileOutputStream
+Xml.newSerializer()
+serializer.setOutPut()
+serializer.startDocument("utf-8",true);
+serizlizer.startTag();
+serizlizer.attribute();
+serizlizer.text();
+serializer.endDocument();
+
+
+030 采用pull解析xml文件
+Xml.newPullParser()
+parser.setInput()
+int type=parser.getEventType();
+while(type!=XmlPullParser.END_DOCUMENT){
+  //
+  ....
+  type=parser.next();
+}
+XmlPullParser.START_TAG
+parser.getName()
+parser.getAttributeValue()
+parser.nextText()
+MainActivity.class.getClassLoader().getResourceAsStream("xxx.xml")
+
+
+031 采用断点调试的方式观察pull解析的流程
+Debug As - Android Applications
+提示，进入Debug视图
+调试后，把Debug清空
+用完记得把断点取消
+
+
+032 Android下创建一个SQLite数据库
+继承SqliteOpenHelper
+构造函数 super(context,xxx.db,null,1)
+OnCreate(SqliteDataBase db){
+  db.execSQL("create table...")
+}
+AndroidTestCase  getContext()
+mydbHelper.getWritableDataBase()
+工具 sqliteExpert
+
+
+033 SQL语句实现数据库增删改查
+db=mydbHelper.getWritableDataBase()
+db.execSQL
+db.close
+db=mydbHelper.getReadableDataBase()
+cursor=db.RawQuery
+cursor.moveNext
+cursor.close
+db.close
+?是sql语句的占位符
+cursor.getInt
+cursor.getColumnIndex
+assertEquals(期待值,结果值)  测试项目里的断言
+
+
+034 系统API实现数据库增删改查
+ContextValues
+db.insert
+db.update
+db.delete
+db.query
+相比使用sql语句，能很方便得到系统返回值
+
+Android Sqlite3 工具使用
+cmd adb shell
+cd data/data/com.android.contacts.provider/databases
+sqlite3 contacts.db
+.tables  查看所有表
+.schema 查看所有的创建表、视图的语句
+.help 查看帮助
+.header(s) ON|OFF 是否显示列头
+.mode MODE ?table? 指定数据显示风格
+.nullValue NULL空值数据显示问题
+select * from tablename;
+
+
+035 数据库的事务
+db.beginTransaction()
+db.setTransactionSuccessful()
+db.endTransaction()
+db.close()
+
+
+036 listview入门
+new Random().nextInt(500) 从0到499的随机数，不包含500
+ListView 只保留屏幕上显示的，不显示的，就会销毁掉，节省资源占用
+mylistview.setAdapter()
+implements 实现接口
+extends 继承类
+一般默认实现类 SimpleXXX、DefaultXXX、BaseXXX
+MVC模式
+M  List<Object>
+V  ListView
+C  Adapter数据适配器
+baseAdapter
+getCount()
+getView()
+通过Log.i()来跟踪数据加载过程
+
+
+037 采用 LayoutInflater 打气筒创建一个View对象
+新建布局文件 res->layout->New->Android XML File
+写在listview的getView()里
+View.inflate() 把xml布局文件转换为View对象
+myview.findViewById()
+注意：mytextview.setText() 参数可接受int类型（资源ID），也可接受字符串类型
+
+
+038 常用数据适配器ArrayAdapter
+mylistview.setAdapter(
+ new ArrayAdapter<string>(this,R.layout.list_item,R.id.mytextview,myarray)
+ //参数1：上下文
+ //参数2：数据显示对应的布局文件
+ //参数3：布局文件里的TextView的ID
+ //参数4：数组
+)
+继承自BaseAdapter
+只适用于简单显示的场景
+
+
+039 常用数据适配器SimpleAdapter
+List<Map<String,Object>> mylist=new ArrayList<Map<String,Object>>();
+Map<String,Object> map1=new HashMap<String,Object>();
+map1.put("peopleName",value);
+map1.put("peopleHeadImg",value);
+mylist.add(map1);
+mylistview.setAdapter(
+	new SimpleAdapter(this,mylist,R.layout.list_item,
+		new string[]{ "peopleName",    "peopleHeadImg"   },
+		new int[]   { R.id.myTextView, R.id.myImageView  }
+	)
+	//参数1：上下文
+    //参数2：数据集合
+    //参数3：数据显示对应的布局文件
+    //参数4和参数5：用于数据和View对象建立映射关系
+)
+
+
+040 数据适配器总结
+无
+
+
+041 内容提供者简介
+安卓四大组件（Activity、Service、BroadcastReceiver、ContentProvider）之一
+需要在清单文件里配置，Activity是在创建的时候自动添加了
+继承ContentProvider，用于暴露私有数据
+通过ContentResolver来获取数据
+
+清单配置：
+<provider
+	android:name="全名称"
+	android:authorities="主机名，相当于网站域名，通常是包名.内容提供者的业务含义"
+	android:permission="权限，不指定的时候（没有此属性），任何人在知道主机名后都可以访问"
+></provider>
+技巧：左边区域找到创建的类MyProvider.java，点加号展开，然后右键Copy Qualified Name，拷贝全名称
+
+
+042 内容提供者实现
+理解：基于中间人提供的uri，App1通过中间人来使用App2的数据
+content://路径 相当于网址 http://www.baidu.com/
+UriMatcher mymatcher=new UriMatcher(UriMatcher.NO_MATCH) //定义一个uri匹配器，如果路径不满足条件返回-1
+static{
+	mymatcher.addURI(主机名,自定义的路径,自定义的数字，与路径对应)  //添加匹配规则
+}
+mymatcher.match() //返回匹配结果
+throw new IllegalArgumentException("路径不合法") //自定义抛出异常
+db.query() //查询数据库，返回cursor
+看部署日志，安装apk时，会发布这个后门
+使用：
+ContentResolver myResolver=getContentResolver(); //得到手机的中间人
+myResolver.query(uri,projection,selection,selectionArgs,sortOrder) //返回cursor
+while(mycursor.moveToNext()){}
+mycursor.close();
+补充：
+ContentUris.parseId(uri) //取出路径最后的ID
+provider的getType()方法，一般用于区分查询的是一条数据还是多条
+provider的onCreate()方法，当内容提供者被创建时调用，适合数据的初始化
+
+
+043 短信的备份
+要使用内容提供者
+从系统源代码里找到 telephony
+然后在 清单文件里找主机名
+然后在.java文件源代码里找路径定义
+Uses Permission 添加权限 android.permission.READ_SMS 和 android.permission.WRITE_SMS
+如果短信很多，提高效率，应该边读边备份
+
+
+044 插入一条记录到系统短信里
+content://sms/
+Uri.parse()
+ContentResolver myres=getContentResolver()
+ContentValues myvalues=new ContentValues()
+myvalues.put()//收发件人，收发类型，日期，内容
+new Thead(){
+  public void run(){
+   //20秒后插入假短信
+   //try..catch块
+  }
+}.start()
+
+
+045 内容观察者
+content://sms/
+Uri.parse()
+ContentResolver myres=getContentResolver()
+myres.registerContentObserver(uri,是否地址绝对匹配，new MyObserver(new Handler()))
+修改MyObserver的onChange()方法
+自己实现内容观察者，在增删改查里添加content.getContentResolver().notifyChange(uri,null)即可
+
+
+046 获取系统的联系人信息
+联系人的数据库表结构，比短信复杂
+com.android.providers.contacts 包名
+contacts2.db 里面有视图，外部工具(sqliteExpert)打开会报错
+contacts2.db-journal 是临时缓存文件，比如事务操作
+raw_contacts 表:联系人主表，字段 contact_id
+data 表：联系人数据子表，字段 data1、mimetype_id、raw_contact_id
+mimetypes 表：数据类型表，1 email 5 phone 7 name
+系统源代码查内容提供者是 ContactsProvider2,
+主机名是“contacts;com.android.contacts”，两种都可以
+源代码 ContactsProvider2.java 查 urlmatch 找到路径
+content://com.android.contacts/raw_contacts
+while(mycursor.moveToNext()){}
+mycursor.getColumnIndex("字段名")  如果列存在返回列索引否则返回-1
+mycursor.getColumnNames 查询出所有列
+权限 android.permission.read_contacts 和 android.permission.write_contacts
+content://com.android.contacts/data  此路径实际查询的是view_data视图，而不是data表
+
+
+047 保存联系人到系统通讯录
+权限，android.permission.write_contacts 和 android.permission.read_contacts
+在 raw_contacts 表新增联系人id，使用这个 id 向 data 表插入对应数据
+myContentValues.put("mimetype","vnd.android.cursor.item/phone_v2")
+myResolver.insert(url,myContentValues)
+mycursor.moveToLast()
+mycursor.getInt(0)
+
+
+048 读取联系人的一个小细节
+空指针，一般是对象为空或方法的数据为空
+删除联系人，raw_contacts 表会把 contact_id 标记为null，这么做是为了同步到服务器，那么读取的时候会报错
+所以读取的时候，要判断是否为空
+
+
+049 网络图片查看器
+android:hint="请输入图片路径"
+android:layout_weight 当宽度或高度为0时，代表渲染的权重；
+当显式指定了宽高的话，代表渲染的优先级，值越大优先级越低，默认是0
+URL url=new URL(path);
+//根据url发送http请求
+HttpURLConnection conn=(HttpURLConnection)url.openConnection();
+conn.setRequestMethod("GET");
+conn.setConnectionTimeout(5000);//设置连接超时
+//conn.setReadTimeout() //设置读取超时，比如图片显示了一部分的情况
+conn.setRequestProperty("User-Agent","Mozilla/.....")
+int myCode=conn.getResponseCode() //得到服务器响应码，200正常
+安卓4.x及以上的版本注重用户体验，以上写法会报错网络主线程异常
+低版本可以正常显示
+InputStream myIs=conn.getInputStream();
+Bitmap myBitmap=BitmapFactory.decodeStream(myIs);
+
+
+050 anr产生的原因以及如何避免
+ANR:application not response 应用程序无响应
+Thread.sleep(6000) //主线程，也叫UI线程
+原因：主线程需要做很多重要的事情，响应点击事件，更新UI等，
+如果在主线程里面阻塞过久，应用程序就会无响应。
+为了避免应用程序出现anr，所有耗时的操作都应该放在子线程里执行。
+访问网络图片比较耗时，在4.x之后的版本不允许主线程操作
+
+
+051 android消息机制入门
+android.view.ViewRootImpl$CalledFromWrongThreadException:
+only the original thread that create a view hierarchy can touch its view.
+意思是“谁创建的view对象，谁才能动他”，即“只有主线程才能修改view对象”。
+内部实现：更新界面的时候做了一个检查，
+更新完ui后，检查这个更新操作是否在主线程的代码执行的，
+如果是没有任何问题，
+如果不是，立刻抛出一个运行时异常 ViewRootImpl$CalledFromWrongThreadException
+android 消息机制：
+1.子线程利用主线程的 Handler 发送一个消息，
+消息被放在主线程的消息队列 message queue 里面
+2.主线程里面有一个 looper 消息的轮询器
+3.如果轮询器发现了新的消息，则调用 handlerMessage() 方法处理消息
+new Thread(){
+	public void run(){
+		//具体的业务代码
+	}
+}.start();
+//1.在主线程里创建一个消息处理器
+private Handler myhandler=new Handler(){
+    //重写 handleMessage
+	public void handleMessage(android.os.Message msg) {
+		//3.处理消息
+		if(msg.what==CHANGE_UI){
+			Bitmap bitmap=(Bitmap)msg.obj;
+			iv.setImageBitmap(bitmap);
+		}
+	};
+};
+//2.告诉主线程一个消息，帮我改界面
+Message mymsg=new Message();
+mymsg.what= CHANGE_UI;//常量，protected static final int CHANGE_UI=1;
+mymsg.obj=myBitmap;//消息的内容：myBitmap
+myhandler.sendMessage(mymsg);
+Toast.makeText(MainActivity.this,"我也属于更改UI的操作哦",0).show();
+
+
+052 网络Html查看器
+<ScrollView><TextView></TextView></ScrollView>
+TextUtils.isEmpty("字符串内容")
+权限：android.permission.internet
+//把流里面的内容转化成文本
+public static String ReadInputStream(InputStream myInputStream){
+	try{
+		ByteArrayOutputStream mybos = new ByteArrayOutputStream()
+		int len=0;
+		byte[] buffer=new byte[1024];
+		while((len==myInputStream.read(buffer))!=-1){
+			mybos.write(buffer,0,len);
+		}
+		myInputStream.close();
+		mybos.close();
+		byte[] result= mybos.toByteArray();
+		return new String(result);
+	}catch(Exception ex){
+		e.printStackTrace();
+		return "转换失败";
+	}	
+}
+
+
+053 字符乱码问题
+android 默认的 charset 是 utf-8 的
+String temp=new String(result);
+if(temp.contains("uft-8")){ //判断html中meta头charset类型
+	return temp;
+}
+else if(temp.contains("gb2312")){
+	return new String(result,"gb2312");
+}
+
+
+054 采用Get方式提交数据到服务器
+myEditText.getText().toString().trim()
+访问网络，放到子线程里
+get方式就是拼接访问路径
+HttpURLConnection
+conn.getInputStream()
+new Thread(){
+	public void run(){
+		//访问服务器得到相应，弹出提示
+		runOnUiThread(new Runnable(){
+			public void run(){
+				Toast.makeText(MainActivity.this,"这是提示",0).show();
+			}
+		});
+	}
+}.start();
+
+
+055 采用Post方式提交数据到服务器
+GET：拼接url，url最大长度不超过4kb（IE是不超过1kb）
+POST：浏览器把数据以流的方式写给服务器
+使用抓包工具 HttpWatch 看 post 和 get 请求头和数据的不同
+conn.setRequestProperty("Content-Type","application/x-www.form-urlencoded");
+string postdata="username="+username+"&password="+password;
+conn.setRequestProperty("Content-Length",postdata.length()+"");
+//浏览器把数据写给服务器
+conn.setDoOutput(true);
+OutputStream myOutputStream =conn.getOutputStream();
+myOutputStream.write(postdata.getBytes());
+conn.getResponseCode();
+
+
+056 提交数据到服务器中文乱码问题的处理
+服务器端和客户端编码保持一致
+URLEncoder.encode(username,"UTF-8")
+
+
+057 采用 httpclient 提交数据到服务器
+架包 org.apache.http.client
+HttpClient myClient=new DefaultHttpClient(); //打开浏览器
+HttpGet myGet=new HttpGet("地址"); //输入地址
+HttpResponse myResponse=myClient.execute(myGet); //敲回车
+int myCode=myResponse.getStatusLine().getStatusCode();//获取状态行、状态码
+InputStream myInputStream=myResponse.getEntity().getContext();//拿到数据实体
+HttpPost myPost=new HttpPost("地址") //输入地址
+//指定要提交的数据实体
+List<NameValuePair> paras=new ArrayList<NameValuePair>();
+paras.add(new BasicNameValuePair("username",username));
+myPost.setEntity(new UrlEncodedFormEntity(paras,"UTF-8"));
+HttpResponse myResponse=myClient.execute(myPost); //敲回车
+使用 HttpWatch 查看 12306 请求数据，然后抢票
+
+
+058 异步 http 框架简介和实现原理
+https://github.com
+点击 Explore 看托管的代码
+android-async-http
+点击 ZIP 下载源代码
+AsynHttpClient myClient=new AsynHttpClient();
+myClient.get(url,new AsyncHttpResponseHandler(){
+	public void onSuccess(String content){}
+	public void onFailure(Throwable error,String content){}
+})
+权限：android.permission.internet
+这个异步框架其实就是封装了 子线程 + Handler + Message 的工具
+使用很方便
+
+
+888 隐藏标题栏
+在onCreate()方法里调用requestWindowFeature(Window.FEATURE_NO_TITLE)
+
